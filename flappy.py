@@ -237,8 +237,13 @@ def mainGame(movementInfo):
     playerFlapAcc =  -9   # players speed on flapping
     playerFlapped = False # True when player flaps
 
-
     while True:
+        # Select correct pipe to be added to the state space
+        if -playerx + lowerPipes[0]['x'] > -30:
+            pipe = lowerPipes[0]
+        else:
+            pipe = lowerPipes[1]
+
         # Unable user-controlled game-play
         '''
         for event in pygame.event.get():
@@ -252,7 +257,10 @@ def mainGame(movementInfo):
                     SOUNDS['wing'].play()
         '''
 
-        if flappy_bot.act():
+        horizontal_difference = -playerx + pipe['x']
+        vertical_difference = -playery + pipe['y']
+
+        if flappy_bot.act(horizontal_difference, vertical_difference, playerVelY):
             if playery > -2 * IMAGES['player'][0].get_height():
                 playerVelY = playerFlapAcc
                 playerFlapped = True
