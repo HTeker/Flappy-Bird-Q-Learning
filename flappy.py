@@ -10,7 +10,7 @@ from FlappyBot import FlappyBot
 # Initialize FlappyBot
 flappy_bot = FlappyBot()
 
-FPS = 30
+FPS = 120
 SCREENWIDTH  = 288
 SCREENHEIGHT = 512
 # amount by which base can maximum shift to left
@@ -258,7 +258,7 @@ def mainGame(movementInfo):
         '''
 
         horizontal_difference = -playerx + pipe['x']
-        vertical_difference = -playery + pipe['y']
+        vertical_difference = - playery + pipe['y'] - (PIPEGAPSIZE / 2)
 
         if flappy_bot.act(horizontal_difference, vertical_difference, playerVelY):
             if playery > -2 * IMAGES['player'][0].get_height():
@@ -269,7 +269,13 @@ def mainGame(movementInfo):
         # check for crash here
         crashTest = checkCrash({'x': playerx, 'y': playery, 'index': playerIndex},
                                upperPipes, lowerPipes)
+
+        flappy_bot.reward = (score + flappy_bot.score) - 1000 if crashTest[0] else score + flappy_bot.score
+        flappy_bot.score += 1
+        flappy_bot.update_last_q_value_based_on_reward()
+
         if crashTest[0]:
+            flappy_bot.save_q_values()
             return {
                 'y': playery,
                 'groundCrash': crashTest[1],
@@ -286,7 +292,7 @@ def mainGame(movementInfo):
         for pipe in upperPipes:
             pipeMidPos = pipe['x'] + IMAGES['pipe'][0].get_width() / 2
             if pipeMidPos <= playerMidPos < pipeMidPos + 4:
-                score += 1
+                score += 10
                 SOUNDS['point'].play()
 
         # playerIndex basex change
@@ -456,7 +462,7 @@ def checkCrash(player, upperPipes, lowerPipes):
     player['h'] = IMAGES['player'][0].get_height()
 
     # if player crashes into ground
-    if player['y'] + player['h'] >= BASEY - 1:
+    if (player['y'] + player['h'] >= BASEY - 1 ) or (player['y'] + player['h'] <= 0):
         return [True, True]
     else:
 
