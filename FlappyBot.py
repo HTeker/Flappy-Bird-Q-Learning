@@ -14,7 +14,8 @@ class FlappyBot():
             file = open('q_values.json', 'r')
             self.q_values = json.load(file)
         except IOError:
-            open('q_values.json', 'w')
+            file = open('q_values.json', 'w')
+            file.write('{}')
 
     def act(self, horizontal_difference, vertical_difference, player_velocity):
         print("Horizontal difference: {} Vertical difference: {} Player velocity: {}".format(horizontal_difference, vertical_difference, player_velocity))
