@@ -258,7 +258,10 @@ def mainGame(movementInfo):
         '''
 
         horizontal_difference = -playerx + pipe['x']
-        vertical_difference = - playery + pipe['y'] - (PIPEGAPSIZE / 2)
+        vertical_difference = -playery + pipe['y'] - (PIPEGAPSIZE / 2)
+
+        #print("playerx: {} | pipe['x']: {} | horizontal_difference: {}".format(playerx, pipe['x'], horizontal_difference))
+        #print("playery: {} | pipe['y']: {} | PIPEGAPSIZE / 2: {} | vertical_difference: {}".format(playery, pipe['y'], PIPEGAPSIZE / 2, vertical_difference))
 
         if flappy_bot.act(horizontal_difference, vertical_difference, playerVelY):
             if playery > -2 * IMAGES['player'][0].get_height():

@@ -1,4 +1,5 @@
 import random
+import math
 import json
 from itertools import chain
 
@@ -10,7 +11,7 @@ class FlappyBot():
 
         self.learning_rate = .7
         self.gamma = 0.95
-        self.chance_of_flapping_on_unknown = 0.05
+        self.chance_of_flapping_on_unknown = 0.1
 
         self.last_move = []
         self.last_state = "0_0_0"
@@ -63,6 +64,10 @@ class FlappyBot():
                                    self.learning_rate * (self.reward + self.gamma * max(self.q_values[resulting_state]))
 
     def convert_states_to_string(self, horizontal_difference, vertical_difference, player_velocity):
+        # Round to the nearest 10
+        horizontal_difference = int(math.ceil(horizontal_difference / 10.0)) * 10
+        vertical_difference = int(math.ceil(vertical_difference / 10.0)) * 10
+
         return str(int(horizontal_difference)) + '_' + str(int(vertical_difference)) + '_' + str(player_velocity)
 
     def save_q_values(self):
