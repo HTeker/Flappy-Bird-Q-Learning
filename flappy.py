@@ -286,13 +286,14 @@ def mainGame(movementInfo):
                 'playerRot': playerRot
             }
 
-        flappy_bot.score += 1
+        flappy_bot.distance += 1
 
         # check for score
         playerMidPos = playerx + IMAGES['player'][0].get_width() / 2
         for pipe in upperPipes:
             pipeMidPos = pipe['x'] + IMAGES['pipe'][0].get_width() / 2
             if pipeMidPos <= playerMidPos < pipeMidPos + 4:
+                flappy_bot.score += 1
                 score += 1
                 SOUNDS['point'].play()
 

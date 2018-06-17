@@ -7,6 +7,7 @@ class FlappyBot():
     def __init__(self):
         self.number_of_games = 0
         self.score = 0
+        self.distance = 0
 
         self.learning_rate = .7
         self.gamma = 0.95
@@ -90,7 +91,11 @@ class FlappyBot():
 
     def save_q_values(self):
         self.number_of_games += 1
-        print('Game #{} | Score: {}'.format(self.number_of_games, self.score))
+        file = open('results.txt', 'a')
+        file.write('Game #{} | Score: {} | Distance: {}'.format(self.number_of_games, self.score, self.distance) + "\n")
+        file.close()
+
+        self.distance = 0
         self.score = 0
         self.reward = 0
 
