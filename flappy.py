@@ -273,12 +273,8 @@ def mainGame(movementInfo):
         crashTest = checkCrash({'x': playerx, 'y': playery, 'index': playerIndex},
                                upperPipes, lowerPipes)
 
-        flappy_bot.reward = (score + flappy_bot.score) - 1000 if crashTest[0] else score + flappy_bot.score
-        flappy_bot.score += 1
-        flappy_bot.update_last_q_value_based_on_reward()
-
         if crashTest[0]:
-            flappy_bot.save_q_values()
+            flappy_bot.update_q_values()
             return {
                 'y': playery,
                 'groundCrash': crashTest[1],
@@ -290,12 +286,14 @@ def mainGame(movementInfo):
                 'playerRot': playerRot
             }
 
+        flappy_bot.score += 1
+
         # check for score
         playerMidPos = playerx + IMAGES['player'][0].get_width() / 2
         for pipe in upperPipes:
             pipeMidPos = pipe['x'] + IMAGES['pipe'][0].get_width() / 2
             if pipeMidPos <= playerMidPos < pipeMidPos + 4:
-                score += 10
+                score += 1
                 SOUNDS['point'].play()
 
         # playerIndex basex change
