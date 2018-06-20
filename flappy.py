@@ -10,7 +10,7 @@ from FlappyBot import FlappyBot
 # Initialize FlappyBot
 flappy_bot = FlappyBot()
 
-FPS = 120
+FPS = 60
 SCREENWIDTH  = 288
 SCREENHEIGHT = 512
 # amount by which base can maximum shift to left
@@ -274,6 +274,7 @@ def mainGame(movementInfo):
                                upperPipes, lowerPipes)
 
         if crashTest[0]:
+            flappy_bot.number_of_games += 1
             flappy_bot.update_q_values()
             return {
                 'y': playery,
