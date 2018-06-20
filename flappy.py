@@ -10,7 +10,7 @@ from FlappyBot import FlappyBot
 # Initialize FlappyBot
 flappy_bot = FlappyBot()
 
-FPS = 60
+FPS = 30
 SCREENWIDTH  = 288
 SCREENHEIGHT = 512
 # amount by which base can maximum shift to left
