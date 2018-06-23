@@ -23,11 +23,11 @@ class FlappyBot():
 
         # Open the q_values.json file if it exists
         try:
-            file = open('q_values.json', 'r')
+            file = open('assets/q_values.json', 'r')
             self.q_values = json.load(file)
         # Create the q_values.json file if it does not exist
         except:
-            file = open('q_values.json', 'w')
+            file = open('assets/q_values.json', 'w')
             self.q_values = {"0_0_0": [0, 0]}
             json.dump(self.q_values, file)
             file.close()
@@ -126,7 +126,7 @@ class FlappyBot():
         msg = 'Game #{} | Score: {} | Distance: {}'.format(self.number_of_games, self.score, self.distance)
         print(msg)
 
-        file = open('results.txt', 'a')
+        file = open('assets/results.txt', 'a')
         file.write(msg + "\n")
         file.close()
 
@@ -134,6 +134,6 @@ class FlappyBot():
         self.score = 0
         self.reward = 0
 
-        file = open('q_values.json', 'w')
+        file = open('assets/q_values.json', 'w')
         json.dump(self.q_values, file)
         file.close()
