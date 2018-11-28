@@ -1,28 +1,45 @@
-FlappyBirdClone
-===============
+# Flappy Bird Q-Learning Bot
 
-A Flappy Bird Clone made using [python-pygame][1]
+Dit was een schoolproject die ik in **juni 2018** heb gedaan.
 
-How-to
-------
+## Systeemvereisten
+U dient Python en pip (package manager) te hebben geïnstalleerd op uw computer.
 
-1. Install Python 2.7.X or 3.5.x from [here](https://www.python.org/download/releases/)
+## Demo van de getrainde bot
+U dient dit project te clonen of te downloaden en vervolgens het volgende te doen:
 
-2. Install PyGame 1.9.X from [here](http://www.pygame.org/download.shtml)
+1. Voer `pip install -r requirements.txt` uit om de dependencies te installeren
+2. Voer `python flappy.py` uit om het programma te starten
 
-3. Clone this repository: `git clone https://github.com/sourabhv/FlappyBirdClone.git` or click `Download ZIP` in right panel and extract it.
+## Demo van het leerproces
+U dient dit project te clonen of te downloaden en vervolgens het volgende te doen:
 
-4. Run `python flappy.py` from the repo's directory
+1. Verwijder/hernoem het bestand `/assets/q_values.json`
+2. Voer `python flappy.py` uit
 
-5. use <kbd>&uarr;</kbd> or <kbd>Space</kbd> key to play and <kbd>Esc</kbd> to close the game.
+Om het leerproces te versnellen kunt u de waarde `FPS = 30` op lijn 13 van `flappy.py` verhogen naar een hoger getal.
 
-  (Note: Install pyGame for same version python as above)
+## Doel
+In dit project heb ik een Machine Learning algoritme (Q-Learning) geïmplementeerd voor het populaire spel Flappy Bird. Het doel was om de computer in staat te stellen het spel zelf te leren spelen, zonder specifieke instructies te geven.
 
-  (For x64 windows, get exe [here](http://www.lfd.uci.edu/~gohlke/pythonlibs/#pygame))
+## Ontwikkelomgeving
+Python
 
-ScreenShot
-----------
+## Omschrijving
+Het doel van het spelen van Flappy Bird is het behalen van zoveel mogelijk punten door middel van het passeren van zoveel mogelijk openingen tussen de twee buizen. Hierbij kan de spelen de spatietoets indrukken om het vogeltje omhoog te laten vliegen óf niets doen om het vogeltje naar beneden te laten vallen.
 
-![Flappy Bird](screenshot1.png)
+In het bestand FlappyBot.py staat de code van de geïmplementeerde Machine Learning algoritme. In grote lijnen werkt het als volgt:
 
-[1]: http://www.pygame.org
+1. De computer weet initieel helemaal niets over het spel, behalve dat hij twee acties kan uitvoeren; vliegen (actie 1) óf niets doen (actie 2)
+2. Bij iedere frame van het spel krijgt de computer de huidige toestand van het spel bestaande uit:
+  - de horizontale afstand tussen het vogeltje en de opening
+  - de verticale afstand tussen het vogeltje en de opening
+  - de mate waarin het vogeltje naar boven of naar beneden gaat
+3. Indien de computer zich eerder in dezelfde toestand heeft begeven -en dus een ervaring heeft opgebouwd op basis van zijn actie- weet hij welke van de twee acties in deze specifieke toestand het beste resultaat oplevert. Hij zal dan ook naargelang deze ervaring handelen. Echter, wanneer hij deze specifieke toestand niet eerder heeft ervaren doet hij niets (actie 2) en gaat later evalueren of dit positief of negatief uitpakt.
+4. Na ieder spel evalueert de computer welke acties hebben geleid tot de beëindiging van het spel en leert op basis hiervan dat deze acties in de gegeven toestanden niet goed zijn om uit te voeren.
+5. De ervaringen die de computer opdoet slaat hij op in het bestand /assets/q_values.json
+6. Hierna begint hij een nieuw spel met de extra ervaring die hij heeft opgedaan in het vorige spel.
+
+## Screenshot
+![alt text](https://user-images.githubusercontent.com/18209782/49144186-050a2a00-f2fd-11e8-8b0e-03abb5a183b4.jpg "De computer is een potje Flappy Bird aan het spelen")
+###### De computer is een potje Flappy Bird aan het spelen
