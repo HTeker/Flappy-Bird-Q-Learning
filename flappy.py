@@ -5,6 +5,10 @@ import sys
 import pygame
 from pygame.locals import *
 
+from FlappyBot import FlappyBot
+
+# Initialize FlappyBot
+flappy_bot = FlappyBot()
 
 FPS = 30
 SCREENWIDTH  = 288
@@ -58,11 +62,11 @@ except NameError:
 
 
 def main():
-    global SCREEN, FPSCLOCK
+    global SCREEN, FPSCLOCK, flappy_bot
     pygame.init()
     FPSCLOCK = pygame.time.Clock()
     SCREEN = pygame.display.set_mode((SCREENWIDTH, SCREENHEIGHT))
-    pygame.display.set_caption('Flappy Bird')
+    pygame.display.set_caption('Flappy Bird Machine Learning')
 
     # numbers sprites for score display
     IMAGES['numbers'] = (
@@ -158,6 +162,13 @@ def showWelcomeAnimation():
     playerShmVals = {'val': 0, 'dir': 1}
 
     while True:
+        # Return values so that Welcome screen is skipped
+        return {
+            'playery': playery + playerShmVals['val'],
+            'basex': basex,
+            'playerIndexGen': playerIndexGen,
+        }
+
         for event in pygame.event.get():
             if event.type == QUIT or (event.type == KEYDOWN and event.key == K_ESCAPE):
                 pygame.quit()
@@ -226,8 +237,15 @@ def mainGame(movementInfo):
     playerFlapAcc =  -9   # players speed on flapping
     playerFlapped = False # True when player flaps
 
-
     while True:
+        # Select correct pipe to be added to the state space
+        if -playerx + lowerPipes[0]['x'] > -30:
+            pipe = lowerPipes[0]
+        else:
+            pipe = lowerPipes[1]
+
+        # Unable user-controlled game-play
+        '''
         for event in pygame.event.get():
             if event.type == QUIT or (event.type == KEYDOWN and event.key == K_ESCAPE):
                 pygame.quit()
@@ -237,11 +255,27 @@ def mainGame(movementInfo):
                     playerVelY = playerFlapAcc
                     playerFlapped = True
                     SOUNDS['wing'].play()
+        '''
+
+        horizontal_difference = -playerx + pipe['x']
+        vertical_difference = -playery + pipe['y'] - (PIPEGAPSIZE / 2)
+
+        #print("playerx: {} | pipe['x']: {} | horizontal_difference: {}".format(playerx, pipe['x'], horizontal_difference))
+        #print("playery: {} | pipe['y']: {} | PIPEGAPSIZE / 2: {} | vertical_difference: {}".format(playery, pipe['y'], PIPEGAPSIZE / 2, vertical_difference))
+
+        if flappy_bot.act(horizontal_difference, vertical_difference, playerVelY):
+            if playery > -2 * IMAGES['player'][0].get_height():
+                playerVelY = playerFlapAcc
+                playerFlapped = True
+                SOUNDS['wing'].play()
 
         # check for crash here
         crashTest = checkCrash({'x': playerx, 'y': playery, 'index': playerIndex},
                                upperPipes, lowerPipes)
+
         if crashTest[0]:
+            flappy_bot.number_of_games += 1
+            flappy_bot.update_q_values()
             return {
                 'y': playery,
                 'groundCrash': crashTest[1],
@@ -253,11 +287,14 @@ def mainGame(movementInfo):
                 'playerRot': playerRot
             }
 
+        flappy_bot.distance += 1
+
         # check for score
         playerMidPos = playerx + IMAGES['player'][0].get_width() / 2
         for pipe in upperPipes:
             pipeMidPos = pipe['x'] + IMAGES['pipe'][0].get_width() / 2
             if pipeMidPos <= playerMidPos < pipeMidPos + 4:
+                flappy_bot.score += 1
                 score += 1
                 SOUNDS['point'].play()
 
@@ -343,6 +380,7 @@ def showGameOverScreen(crashInfo):
         SOUNDS['die'].play()
 
     while True:
+        return # Return immediately so that game starts again automatically
         for event in pygame.event.get():
             if event.type == QUIT or (event.type == KEYDOWN and event.key == K_ESCAPE):
                 pygame.quit()
@@ -350,7 +388,6 @@ def showGameOverScreen(crashInfo):
             if event.type == KEYDOWN and (event.key == K_SPACE or event.key == K_UP):
                 if playery + playerHeight >= BASEY - 1:
                     return
-
         # player y shift
         if playery + playerHeight < BASEY - 1:
             playery += min(playerVelY, BASEY - playery - playerHeight)
@@ -428,7 +465,7 @@ def checkCrash(player, upperPipes, lowerPipes):
     player['h'] = IMAGES['player'][0].get_height()
 
     # if player crashes into ground
-    if player['y'] + player['h'] >= BASEY - 1:
+    if (player['y'] + player['h'] >= BASEY - 1 ) or (player['y'] + player['h'] <= 0):
         return [True, True]
     else:
 
